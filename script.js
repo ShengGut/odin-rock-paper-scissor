@@ -1,9 +1,15 @@
     const choices = ["rock", "paper", "scissor"];
+    let playerScore = 0;
+    let computerScore = 0;
+    const body = document.querySelector('body');
 
+    const results = document.createElement('div');
+    results.classList.add('score');
+    results.textContent = `Score: Player (${playerScore}) Computer (${computerScore})`;
+    body.appendChild(results);
 
     function playRound(playerSelection, computerSelection){
-        playerSelection = playerSelection.toLowerCase();
-
+      
         if(!choices.includes(playerSelection))
             return "Invalid input. Check that your input is rock, paper, or scissor"
 
@@ -16,11 +22,37 @@
             scissor: "paper"
         };
 
-        if (winConditions[playerSelection] === computerSelection)
-            return `You Win! ${playerSelection} beats ${computerSelection}`;
-        else
-            return `You Lose. ${computerSelection} beats ${playerSelection}`;
+        if (winConditions[playerSelection] === computerSelection && (playerScore != 4)) {
+            playerScore++;
+            results.textContent = `Score: Player (${playerScore}) Computer (${computerScore})`;
+            return `You Win! ${playerSelection} beats ${computerSelection}. Score: Player (${playerScore}) Computer (${computerScore})`;
+
+        } 
         
+        else if (winConditions[playerSelection] === computerSelection && playerScore == 4) {
+            playerTally = ++playerScore;
+            computerTally = computerScore;
+            playerScore = 0;
+            computerScore = 0;
+            results.textContent = `Player wins the game! Final Score: Player (${playerTally}) Computer (${computerTally})Resetting Score...`;
+            return `Player wins the game! Final Score: Player (${playerTally}) Computer (${computerTally})`
+        }
+
+        else if (winConditions[playerSelection] !== computerSelection && (computerScore != 4))  {
+            computerScore++;
+            results.textContent = `Score: Player (${playerScore}) Computer (${computerScore})`;
+            return `You Lose. ${computerSelection} beats ${playerSelection}. Score: Player (${playerScore}) Computer (${computerScore})`;
+        }
+
+        else {
+            results.textContent = `Score: Player (${playerScore}) Computer (${computerScore})`;
+            playerTally = playerScore;
+            computerTally = ++computerScore;
+            playerScore = 0;
+            computerScore = 0;
+            results.textContent = `Computer wins the game! Final Score: Player (${playerTally}) Computer (${computerTally})Resetting Score...`;
+            return `Computer wins the game! Final Score: Player (${playerTally}) Computer (${computerTally})`
+        }
     }
 
     // Randomly generate a number up to the array choice length to determine which item is chosen
@@ -29,10 +61,16 @@
         return choices[decision];
     };
 
+    const rock = document.querySelector('#rock');
+    const paper = document.querySelector('#paper');
+    const scissor = document.querySelector('#scissor');
 
-    for (let i = 1; i <= 5; i++) {
-        console.log(`Round ${i}`)
-        const computerSelection = getComputerChoice();
-        let playerSelection = prompt("Enter rock, paper, or scissor");
-        console.log(playRound(playerSelection,computerSelection));
-    }
+    rock.addEventListener('click', function (e) {
+        console.log(playRound(rock.id, getComputerChoice()));
+    });
+    paper.addEventListener('click', function (e) {
+        console.log(playRound(paper.id, getComputerChoice()));
+    });
+    scissor.addEventListener('click', function (e) {
+        console.log(playRound(scissor.id, getComputerChoice()));
+    });
